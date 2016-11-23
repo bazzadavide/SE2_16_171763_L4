@@ -8,6 +8,7 @@ var tempCont;
 var bool = false;
 //express lib
 var express = require('express');
+var bind = require('bind');
 //inspect
 var util = require('util');
 
@@ -18,15 +19,25 @@ var app = express();
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.set('port', (process.env.PORT || 1338));
+app.set('port', (process.env.PORT || 1339));
+app.get('/', function (req, res){
+    console.log("sono entrato dentro use");
+     bind.toFile('home.html',{
+        err: "",
+         visibility: "hidden"
+  
+    }, function(data){
+        res.writeHead(200, {'Content-Type':'text/html'});
+        res.end(data);
+    });
+    
+});
 
-app.use('/', function(request, response) 
+app.post('/send', function(request, response) 
 {
-
+    console.log("dentro al post");
 	if ( typeof request.body !== 'undefined' && request.body)
-	{
-        //the ontent of the POST receiced
-		text = "request.body: " + util.inspect(request.body.id) + "\n";	
+	{	
 		//se definita e non nulla prendo l'elemento id dal form
 		if ( typeof request.body.id !== 'undefined' && request.body.id){
             //salvo nell'array l'id
@@ -95,9 +106,65 @@ app.use('/', function(request, response)
 	{
 		text = "body undefined";
 	}
+     bind.toFile('home.html',{
+        err: ""
+  
+    }, function(data){
+        response.writeHead(200, {'Content-Type':'text/html'});
+         response.end(data);
+    });
+    
+    
 
-    response.sendFile("home.html", {root: __dirname});
+});
 
+app.post('/search', function(request, response){
+    if ( typeof request.body !== 'undefined' && request.body)
+	{
+        if ( typeof request.body.idsearch !== 'undefined' && request.body.idsearch){
+            var searchID = parseInt(JSON.parse(request.body.idsearch));
+            var i = findID(searchID,id);
+            if(i=='undefined'){
+                 bind.toFile('home.html',{
+                    err: "There's no employee with this ID!"
+  
+                }, function(data){
+                    response.writeHead(200, {'Content-Type':'text/html'});
+                     response.end(data);
+                });
+            }else{
+                
+                bind.toFile('home.html',{
+                    id: id[i],
+                    name: name[i],
+                    surname: surname[i],
+                    level: level[i],
+                    salary: salary[i],
+                    visibility: "visible"
+                    
+                }, function(data){
+                    response.writeHead(200, {'Content-Type':'text/html'});
+                    response.end(data);
+                });
+               
+            }
+        }
+        else {
+            bind.toFile('home.html',{
+                    err: "Form error, please insert a valid ID"
+  
+                }, function(data){
+                    response.writeHead(200, {'Content-Type':'text/html'});
+                    response.end(data);
+                });
+            
+        }
+    }
+	else
+    {
+		text = "body undefined";
+	}
+    
 });
 
 function existID(id,array){
@@ -130,7 +197,8 @@ function findID(id,array){
      max = max+1;
      console.log("max+1:"+max);
     return max; 
- }   
+ }
+
 
 //starta il server
 app.listen(app.get('port'), function() {

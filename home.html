@@ -1,18 +1,48 @@
 <!DOCTYPE html>
 <html>   
     <body>
-        <p id="err"></p>
-        <form action="http://127.0.0.1:1338/" method="post">
-            <input type="text" name="searchid"><br>
-            <button type="button" onclick="submit()">Search for ID</button>
-        </form>
-        <form action="http://127.0.0.1:1338/" method="post"><br>
-            ID: <input type="text" name="id"><br>
-            Name: <input type="text" name="name"><br>
-            Surname: <input type="text" name="surname"><br>
-            Level: <input type="text" name="level"><br>
-            Salary: <input type="text" name="salary"><br>
-            <button type="button" onclick="submit()">Send Data</button>
-        </form>
+        (:err:)
+        <div id="searchForm">
+            <form action="http://127.0.0.1:1339/search" method="post">
+            Search Employee: <input type="text" name="idsearch">
+            <button type="button" onclick="submit()">Search</button>
+            </form>
+        </div>
+        <div id="deleteForm">
+            <form action="http://127.0.0.1:1339/delete" method="post">
+            Delete Employee: <input type="text" name="iddelete">
+            <button type="button" onclick="submit()">Delete</button>
+            </form>
+        </div>
+        <div id="buttonHideForm">
+            <button onclick="hideAndSeek()">Add Employee</button>
+       </div>
+        <div id="insertForm" style='visibility: hidden'>
+            <form action="http://127.0.0.1:1339/send" method="post">
+                ID: <input type="text" name="id"><br>
+                Name: <input type="text" name="name"><br>
+                Surname: <input type="text" name="surname"><br>
+                Level: <input type="text" name="level"><br>
+                Salary: <input type="text" name="salary"><br>
+                <button type="button" onclick="submit()">Send Data</button>
+            </form>
+        </div>
+        <div id="showForm" style='visibility: (:visibility:)'>        
+                ID: (:id:)<br>
+                Name: (:name:)<br>
+                Surname: (:surname:)<br>
+                Level: (:level:)<br>
+                Salary: (:salary:)<br> 
+        </div>
+        <script>
+            function hideAndSeek(){
+                var divOne = document.getElementById('buttonHideForm');
+                var divTwo = document.getElementById('insertForm');
+                var divTree = document.getElementById('showForm');
+                divOne.style.visibility = 'hidden';
+                divTwo.style.visibility = 'visible';
+                divTree.style.visibility = 'hidden';
+            }
+        </script>
     </body>
 </html>
