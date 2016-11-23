@@ -107,7 +107,8 @@ app.post('/send', function(request, response)
 		text = "body undefined";
 	}
      bind.toFile('home.html',{
-        err: ""
+        err: "",
+        visibility: "hidden"  
   
     }, function(data){
         response.writeHead(200, {'Content-Type':'text/html'});
@@ -124,9 +125,11 @@ app.post('/search', function(request, response){
         if ( typeof request.body.idsearch !== 'undefined' && request.body.idsearch){
             var searchID = parseInt(JSON.parse(request.body.idsearch));
             var i = findID(searchID,id);
-            if(i=='undefined'){
+            console.log("i: "+i);
+            if(typeof i == 'undefined'){
                  bind.toFile('home.html',{
-                    err: "There's no employee with this ID!"
+                    err: "There's no employee with this ID!",
+                    visibility: "hidden"
   
                 }, function(data){
                     response.writeHead(200, {'Content-Type':'text/html'});
@@ -165,6 +168,30 @@ app.post('/search', function(request, response){
 		text = "body undefined";
 	}
     
+});
+
+app.post('/delete', function(request, response){
+    if ( typeof request.body !== 'undefined' && request.body)
+	{
+        if ( typeof request.body.iddelete !== 'undefined' && request.body.iddelete){
+            var deleteID = parseInt(JSON.parse(request.body.iddelete));
+            var i = findID(deleteID,id);
+            id.splice(i,1);
+            name.splice(i,1);
+            surname.splice(i,1);
+            level.splice(i,1);
+            salary.splice(i,1);
+            console.log("precont: "+cont);
+            cont--;
+            console.log("postcont: "+cont);
+        }
+    }
+    bind.toFile('home.html',{
+        visibility: "hidden"
+    }, function(data){
+        response.writeHead(200, {'Content-Type':'text/html'});
+        response.end(data);
+    });
 });
 
 function existID(id,array){
