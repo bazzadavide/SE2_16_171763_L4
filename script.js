@@ -4,8 +4,8 @@ var surname = [];
 var level = [];
 var salary = [];
 var cont = 0;
-var lock = 1;
-var qs = require('querystring');
+var tempCont;
+var bool = false;
 //express lib
 var express = require('express');
 //inspect
@@ -22,15 +22,6 @@ app.set('port', (process.env.PORT || 1338));
 
 app.use('/', function(request, response) 
 {
-    
-    //set the headers of the responce
-    var headers = {};
-    //answer
-    headers["Content-Type"] = "text/html";
-    response.writeHead(200, headers);
-
-
-	var text = '';
 
 	if ( typeof request.body !== 'undefined' && request.body)
 	{
@@ -40,52 +31,108 @@ app.use('/', function(request, response)
 		if ( typeof request.body.id !== 'undefined' && request.body.id){
             //salvo nell'array l'id
             console.log("if dell'id");
-			id[cont] = JSON.stringify(request.body.id);
-            console.log(id[cont]);
+			tempID = parseInt(JSON.parse(request.body.id));
+            
+            if(existID(tempID,id)){
+                console.log("Sono dentro l'if"),
+                tempCont = cont;
+                cont = findID(tempID,id);
+                bool = true;
+            }
+            else id[cont] = tempID;
+                 
+            console.log("id: "+id[cont]);
+        }else {
+            var max = newMax(id);
+            id[cont] = max;
+            console.log("id: "+id[cont]);
+        }
 		
-            //oltre a fare il controllo di prima controlla anche una variabile lock, senza ID non esiste l'operaio
-		  if ( typeof request.body.name !== 'undefined' && request.body.name){
+		  if (typeof request.body.name !== 'undefined' && request.body.name){
                 //salvo nell'array 
     		  name[cont] = JSON.stringify(request.body.name);
-              console.log("if del name");
+              console.log("name: "+name[cont]);
           }
 		  else 
                 // in caso qualcosa vada storto
 			  name[cont] = "not defined";
-          if ( typeof request.body.surname !== 'undefined' && request.body.surname)
+          if ( typeof request.body.surname !== 'undefined' && request.body.surname){
                 //salvo nell'array 
               surname[cont] = JSON.stringify(request.body.surname);
+              console.log("surname: "+ surname[cont]);
+          }
 		  else 
                 // in caso qualcosa vada storto
 			  surname[cont] = "not defined";
-          if ( typeof request.body.level !== 'undefined' && request.body.level)
+          if ( typeof request.body.level !== 'undefined' && request.body.level){
                 //salvo nell'array 
-    		  level[cont] = request.body.level;
+    		  level[cont] = parseInt(JSON.parse(request.body.level));
+              console.log("level: "+ level[cont]);
+              }
 		  else 
                 // in caso qualcosa vada storto
 			  level[cont] = 0;
-          if ( typeof request.body.salary !== 'undefined' && request.body.salary)
+          if ( typeof request.body.salary !== 'undefined' && request.body.salary){
                 //salvo nell'array 
-    		  level[cont] = request.body.salary;
+    		  salary[cont] = parseInt(JSON.parse(request.body.salary));
+              console.log("salary: "+salary[cont]);
+            }
 		  else 
                 // in caso qualcosa vada storto
-			  level[cont] = 0;
-            
-            cont++;
-        }
+			  salary[cont] = 0;
+            //aumento il contatore
+        if(bool){
+            cont = tempCont;
+            bool = false;
+        }    
+        cont++;
+        printIDArray(id);
         
         
-	    console.log(id[cont]);	
-        text = text + "post received: id=" + id[cont] + ", name="+ name[cont]+", surname="+surname[cont]+", level="+level[cont]+", salary="+salary[cont];
+        
 	}
 	else
 	{
 		text = "body undefined";
 	}
 
-    response.end(text);
+    response.sendFile("home.html", {root: __dirname});
 
 });
+
+function existID(id,array){
+    var res = false;
+    for(i=0;i<cont;i++){
+        if(array[i]==id) res = true;
+    }
+    return res;
+}
+
+function printIDArray(array){
+    for(i=0;i<cont;i++){
+        console.log("id: "+array[i]);
+    }
+}
+
+function findID(id,array){
+    var res;
+    for(i=0;i<cont;i++){
+        if(array[i]==id) res = i;
+    }
+    return res;   
+}
+    
+ function newMax(array){
+     var max = 0;
+     for(i=0;i<cont;i++)
+         if(array[i]>max) max = array[i];
+     console.log("max:"+max);
+     max = max+1;
+     console.log("max+1:"+max);
+    return max; 
+ }   
+
+//starta il server
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });

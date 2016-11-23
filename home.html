@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html>   
     <body>
+        <p id="err"></p>
         <form action="http://127.0.0.1:1338/" method="post">
-            ID: <input type="text" name="id" value="Mickey" id="id">
-            Name: <input type="text" name="name" value="Mickey" id="name">
-            Surname: <input type="text" name="surname" value="Mickey" id="surname">
-            Level: <input type="text" name="level" value="Mickey" id="level">
-            Salary: <input type="text" name="salary" value="Mickey" id="salary">
+            <input type="text" name="searchid"><br>
+            <button type="button" onclick="submit()">Search for ID</button>
+        </form>
+        <form action="http://127.0.0.1:1338/" method="post"><br>
+            ID: <input type="text" name="id"><br>
+            Name: <input type="text" name="name"><br>
+            Surname: <input type="text" name="surname"><br>
+            Level: <input type="text" name="level"><br>
+            Salary: <input type="text" name="salary"><br>
             <button type="button" onclick="submit()">Send Data</button>
         </form>
     </body>
